@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import "./ProductList.css"
 import CartItem from "./CartItem"
-import { useSelector , useDispatch } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { addItem, removeItem, updateQuantity } from "./CartSlice"
 
 function ProductList({ onHomeClick }) {
@@ -10,20 +10,24 @@ function ProductList({ onHomeClick }) {
   const [addedToCart, setAddedToCart] = useState({})
   const dispatch = useDispatch()
   // Inside your ProductList component
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector(state => state.cart.items)
 
-    useEffect(() => {
+  const calculateTotalQuantity = () => {
+    return cartItems ? cartItems.reduce((total, item) => total + item.quantity, 0) : 0
+  }
+
+  useEffect(() => {
     // When cart changes, reset 'addedToCart' for removed items
-    const updatedAddedToCart = {};
+    const updatedAddedToCart = {}
 
-    cartItems.forEach((item) => {
-        updatedAddedToCart[item.name] = true;
-    });
+    cartItems.forEach(item => {
+      updatedAddedToCart[item.name] = true
+    })
 
-    setAddedToCart(updatedAddedToCart);
-    }, [cartItems]);
+    setAddedToCart(updatedAddedToCart)
+  }, [cartItems])
 
-    const plantsArray = [
+  const plantsArray = [
     {
       category: "Air Purifying Plants",
       plants: [
@@ -204,7 +208,7 @@ function ProductList({ onHomeClick }) {
           cost: "$10"
         },
         {
-          name: "Snake Plant",
+          name: "Snake Plant 2",
           image: "https://cdn.pixabay.com/photo/2021/01/22/06/04/snake-plant-5939187_1280.jpg",
           description: "Needs infrequent watering and is resilient to most pests.",
           cost: "$15"
@@ -272,7 +276,7 @@ function ProductList({ onHomeClick }) {
   }
   const handleAddToCart = product => {
     setAddedToCart(prevState => {
-     const isAlreadyAdded = !!prevState[product.name]
+      const isAlreadyAdded = !!prevState[product.name]
       if (isAlreadyAdded) {
         const newState = { ...prevState }
         delete newState[product.name]
@@ -313,14 +317,39 @@ function ProductList({ onHomeClick }) {
           <div>
             {" "}
             <a href="#" onClick={e => handleCartClick(e)} style={styleA}>
-              <h1 className="cart">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68">
-                  <rect width="156" height="156" fill="none"></rect>
-                  <circle cx="80" cy="216" r="12"></circle>
-                  <circle cx="184" cy="216" r="12"></circle>
-                  <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" id="mainIconPathAttribute"></path>
-                </svg>
-              </h1>
+              <div style={{ position: "relative", display: "inline-block" }}>
+                <h1 className="cart" style={{ margin: 0 }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" id="IconChangeColor" height="68" width="68">
+                    <rect width="156" height="156" fill="none"></rect>
+                    <circle cx="80" cy="216" r="12"></circle>
+                    <circle cx="184" cy="216" r="12"></circle>
+                    <path d="M42.3,72H221.7l-26.4,92.4A15.9,15.9,0,0,1,179.9,176H84.1a15.9,15.9,0,0,1-15.4-11.6L32.5,37.8A8,8,0,0,0,24.8,32H8" fill="none" stroke="#faf9f9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+                  </svg>
+
+                  {/* Badge to show total quantity */}
+                  {calculateTotalQuantity() > 0 && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        color: "white",
+                        borderRadius: "50%",
+                        width: "28px",
+                        height: "28px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "19px",
+                        fontWeight: "bold"
+                      }}
+                    >
+                      {calculateTotalQuantity()}
+                    </span>
+                  )}
+                </h1>
+              </div>
             </a>
           </div>
         </div>
@@ -330,21 +359,24 @@ function ProductList({ onHomeClick }) {
           {plantsArray.map((category, index) => (
             <div key={index}>
               <div className="center-wrapper">
-                <h1><hr />{category.category}<hr /></h1>
+                <h1>
+                  <hr />
+                  {category.category}
+                  <hr />
+                </h1>
               </div>
               <div className="product-list">
                 {category.plants.map((plant, plantIndex) => (
-                
                   <div className="product-card" key={plantIndex}>
                     <img className="product-image" src={plant.image} alt={plant.name} />
                     <div className="product-title">{plant.name}</div>
                     <div className="product-description">{plant.description}</div>
                     <div className="product-cost">${plant.cost}</div>
                     <button
-                      className={`product-button ${addedToCart[plant.name] === true ? 'added-to-cart' : ''}`}
+                      className={`product-button ${addedToCart[plant.name] === true ? "added-to-cart" : ""}`}
                       onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
                     >
-                     { addedToCart[plant.name] === true ? 'Added' : 'Add to Cart'}
+                      {addedToCart[plant.name] === true ? "Added" : "Add to Cart"}
                     </button>
                   </div>
                 ))}
