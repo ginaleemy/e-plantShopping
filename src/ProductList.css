@@ -188,6 +188,24 @@ body {
 
     
 }
+.center-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+  }
+  
+  .category {
+    text-align: center;
+    display: inline-block;
+  }
+  
+  .category hr {
+    margin: 5px 0;
+    border: none;
+    border-top: 1px solid #999;
+  }
+  
+
 /* Add Media Query for responsiveness */
 @media (max-width: 768px) {
     .product-card {
